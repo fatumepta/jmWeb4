@@ -20,7 +20,7 @@ public class CustomerServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_OK);
         out.println("<b><h2>CustomerServlet</h2></b>");
         carService.getAllCars().forEach(car -> out.printf("<br>[ID: %d BRAND: %s MODEL: %s LIC.PLATE: %s PRICE: %d]</br>",
-                car.getId(), car.getModel(), car.getBrand(), car.getLicensePlate(), car.getPrice()));
+                car.getId(), car.getBrand(), car.getModel(), car.getLicensePlate(), car.getPrice()));
 
 //        Gson gson = new Gson();
 //        String json = gson.toJson(CarService.getInstance().getAllCars());
@@ -28,6 +28,12 @@ public class CustomerServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        super.doPost(req, resp);
+        // car buying request
+        String brand = req.getParameter("brand");
+        String model = req.getParameter("model");
+        String licensePlate = req.getParameter("licensePlate");
+
+        carService.buyCar(brand, model, licensePlate);
+        resp.setStatus(HttpServletResponse.SC_OK);
     }
 }

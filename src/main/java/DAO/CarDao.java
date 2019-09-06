@@ -3,11 +3,11 @@ package DAO;
 import model.Car;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 
 public class CarDao {
-
     private Session session;
 
     public CarDao(Session session) {
@@ -15,23 +15,29 @@ public class CarDao {
     }
 
     public List<Car> getAllCarsFromDB() {
-        Transaction transaction = session.beginTransaction();
-        List<Car> allCars = session.createQuery("FROM Car").list();
-        transaction.commit();
-        session.close();
-
-        return allCars;
+        return (List<Car>) session.createCriteria(Car.class).list();
     }
 
-    // Выставить ограничения на добавление автомобилей (не более 10 шт. одного бренда в день)
-    // Подумать, где выставить ограничения - в сервисе или в ДАО?
-    // Добавить метод запрашивающий количество автомобилей определенного бренда в из БД
+    public Car getCar(String licensePlate, String model, String brand) {
+        return (Car) session.createCriteria(Car.class)
+                .add(Restrictions.eq("licensePlate", licensePlate))
+                .add(Restrictions.eq("model", model))
+                .add(Restrictions.eq("brand", brand)).uniqueResult();
+    }
+
     public void addCarToDB(Car car) {
         Transaction transaction = session.beginTransaction();
-        session.saveOrUpdate(car);
+        session.save(car);
         transaction.commit();
-        session.close();
-
     }
 
+    public void deleteCarFromDB(Car car) {
+        Transaction transaction = session.beginTransaction();
+        session.delete(car);
+        transaction.commit();
+    }
+
+    public int getNumberOfOneBrandCarsInDB(String brand) {
+        return session.createCriteria(Car.class).add(Restrictions.eq("brand", brand)).list().size();
+    }
 }

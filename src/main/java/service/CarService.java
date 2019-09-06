@@ -30,7 +30,22 @@ public class CarService {
         return getCarDao().getAllCarsFromDB();
     }
 
-    public void addCar(Car car) {
-        getCarDao().addCarToDB(car);
+    public boolean addCar(Car car) {
+        if (getNumberOfOneBrandCars(car.getBrand()) < 10) {
+            getCarDao().addCarToDB(car);
+            return true;
+        }
+
+        return false;
     }
+
+    public void buyCar(String brand, String model, String licensePlate) {
+        Car car = getCarDao().getCar(licensePlate, model, brand);
+        getCarDao().deleteCarFromDB(car);
+    }
+
+    private int getNumberOfOneBrandCars(String brand) {
+        return getCarDao().getNumberOfOneBrandCarsInDB(brand);
+    }
+
 }
