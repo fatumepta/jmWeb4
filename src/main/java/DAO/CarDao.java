@@ -15,29 +15,42 @@ public class CarDao {
     }
 
     public List<Car> getAllCarsFromDB() {
-        return (List<Car>) session.createCriteria(Car.class).list();
+        List<Car> cars = (List<Car>) session.createCriteria(Car.class).list();
+
+        session.close();
+        return cars;
     }
 
     public Car getCar(String licensePlate, String model, String brand) {
-        return (Car) session.createCriteria(Car.class)
+        Car car = (Car) session.createCriteria(Car.class)
                 .add(Restrictions.eq("licensePlate", licensePlate))
                 .add(Restrictions.eq("model", model))
                 .add(Restrictions.eq("brand", brand)).uniqueResult();
+
+        session.close();
+        return car;
     }
 
     public void addCarToDB(Car car) {
         Transaction transaction = session.beginTransaction();
         session.save(car);
         transaction.commit();
+
+        session.close();
     }
 
     public void deleteCarFromDB(Car car) {
         Transaction transaction = session.beginTransaction();
         session.delete(car);
         transaction.commit();
+
+        session.close();
     }
 
     public int getNumberOfOneBrandCarsInDB(String brand) {
-        return session.createCriteria(Car.class).add(Restrictions.eq("brand", brand)).list().size();
+        int number = session.createCriteria(Car.class).add(Restrictions.eq("brand", brand)).list().size();
+
+        session.close();
+        return number;
     }
 }
