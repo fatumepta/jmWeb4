@@ -31,7 +31,6 @@ public class DailyReportDao {
     }
 
     public DailyReport getLastReportFromDB() {
-        Transaction transaction = session.beginTransaction();
         DailyReport lastReport = (DailyReport) session.createQuery(
                 "FROM DailyReport ORDER BY id DESC").setMaxResults(1).list().get(0);
 

@@ -53,4 +53,12 @@ public class CarDao {
         session.close();
         return number;
     }
+
+    public void deleteAllCarsFromDB() {
+        Transaction transaction = session.beginTransaction();
+        session.createQuery("DELETE FROM Car").executeUpdate();
+        transaction.commit();
+
+        session.close();
+    }
 }

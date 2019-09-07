@@ -7,6 +7,7 @@ import util.DBHelper;
 
 import java.util.List;
 
+
 public class CarService {
     private static CarService carService;
     private SessionFactory sessionFactory;
@@ -50,4 +51,7 @@ public class CarService {
         return getCarDao().getNumberOfOneBrandCarsInDB(brand);
     }
 
+    public void deleteAllCars() {
+        getCarDao().deleteAllCarsFromDB();
+    }
 }

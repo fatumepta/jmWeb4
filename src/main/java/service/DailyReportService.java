@@ -13,7 +13,7 @@ public class DailyReportService {
     private long soldTodayUnits = 0L;
     private long profitToday = 0L;
 
-    public void commitDeal(long price) {
+    void commitDeal(long price) {
         ++soldTodayUnits;
         profitToday += price;
     }
@@ -47,7 +47,7 @@ public class DailyReportService {
         return getDailyReportDao().getLastReportFromDB();
     }
 
-    public void generateDaylyReport() {
+    public void generateDailyReport() {
         DailyReport today = new DailyReport(profitToday, soldTodayUnits);
         getDailyReportDao().addDailyReportToDB(today);
         closeTheDay();
