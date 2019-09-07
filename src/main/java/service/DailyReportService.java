@@ -8,10 +8,20 @@ import util.DBHelper;
 import java.util.List;
 
 public class DailyReportService {
-
     private static DailyReportService dailyReportService;
-
     private SessionFactory sessionFactory;
+    private long soldTodayUnits = 0L;
+    private long profitToday = 0L;
+
+    public void commitDeal(long price) {
+        ++soldTodayUnits;
+        profitToday += price;
+    }
+
+    private void closeTheDay() {    // reset daily sales counters
+        soldTodayUnits = 0L;
+        profitToday = 0L;
+    }
 
     private DailyReportService(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -24,12 +34,26 @@ public class DailyReportService {
         return dailyReportService;
     }
 
+    private static DailyReportDao getDailyReportDao() {
+        return new DailyReportDao(dailyReportService.sessionFactory.openSession());
+    }
+
     public List<DailyReport> getAllDailyReports() {
-        return new DailyReportDao(sessionFactory.openSession()).getAllDailyReport();
+        return getDailyReportDao().getAllDailyReport();
     }
 
 
     public DailyReport getLastReport() {
-        return null;
+        return getDailyReportDao().getLastReportFromDB();
+    }
+
+    public void generateDaylyReport() {
+        DailyReport today = new DailyReport(profitToday, soldTodayUnits);
+        getDailyReportDao().addDailyReportToDB(today);
+        closeTheDay();
+    }
+
+    public void deleteAllReports() {
+        getDailyReportDao().deleteAllReportsFromDB();
     }
 }

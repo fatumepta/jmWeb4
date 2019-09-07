@@ -10,6 +10,7 @@ import java.util.List;
 public class CarService {
     private static CarService carService;
     private SessionFactory sessionFactory;
+    private DailyReportService dailyReportService = DailyReportService.getInstance();
 
     private CarService(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -41,6 +42,7 @@ public class CarService {
 
     public void buyCar(String brand, String model, String licensePlate) {
         Car car = getCarDao().getCar(licensePlate, model, brand);
+        dailyReportService.commitDeal(car.getPrice());
         getCarDao().deleteCarFromDB(car);
     }
 
